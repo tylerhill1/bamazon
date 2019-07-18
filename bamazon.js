@@ -58,7 +58,13 @@ inquirer
     console.log(res[index].item_id);
     console.log(index);
 
-    // if (inquirerResponse.quantity > res[index].stock_quantity)
+    if (inquirerResponse.quantity > res[index].stock_quantity) {
+        console.log("INSUFFICIENT QUANTITY");
+    }
+    else {
+        var cost = inquirerResponse.quantity * res[index].price;
+        console.log("That costed you $" + cost);
+    }
 // var sequel = "SELECT * FROM songs where genre = 'pop'";
 // var updateSQL = "INSERT INTO songs (title, artist, genre) VALUES ('" + inquirerResponse.title + "', '" + inquirerResponse.artist + "', '" + inquirerResponse.genre + "')";
 // console.log(updateSQL);
