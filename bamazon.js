@@ -16,6 +16,26 @@ var connection = mysql.createConnection({
   database: "bamazon"
 });
 
+function contin()  {
+    inquirer
+  .prompt([
+    {
+      type: "confirm",
+      message: "Continue shopping?",
+      name: "contin"
+    }
+  ])
+  .then(function(inquirerResponse) {
+  if (inquirerResponse.contin) {
+    afterConnection();
+  }
+  else {
+      connection.end();
+  }
+});
+}
+
+
 
 connection.connect(function(err) {
     if (err) throw err;
@@ -59,51 +79,34 @@ inquirer
     // console.log(index);
     if (parseInt(inquirerResponse.id) > res.length) {
         console.log("That item does not exist");
-        
+        contin();
     }
 
     else {
     if (inquirerResponse.quantity > res[index].stock_quantity) {
         console.log("INSUFFICIENT QUANTITY");
-
+        contin();
     }
     else {
         var cost = inquirerResponse.quantity * res[index].price;
         console.log("That costed you $" + cost + "\n");
 
         //sql stuff
-        afterConnection();
-
-        
-
-    function afterConnection() {
+        afterConn();
+    
+    function afterConn() {
         var newQuantity = res[index].stock_quantity - inquirerResponse.quantity;
     var updateSQL = "UPDATE products SET stock_quantity = " + newQuantity + " WHERE " + "item_id = " + res[index].item_id;
-    console.log(updateSQL);
+    // console.log(updateSQL);
         connection.query(updateSQL, function(err, res) {
             if (err) throw err;
-            console.log(res);
-            connection.end();
+            // console.log(res);
+            contin();
         });
       }
     }
 }
-// var sequel = "SELECT * FROM songs where genre = 'pop'";
-// var updateSQL = "INSERT INTO songs (title, artist, genre) VALUES ('" + inquirerResponse.title + "', '" + inquirerResponse.artist + "', '" + inquirerResponse.genre + "')";
-// console.log(updateSQL);
 
-
-    // connection.query(sequel, function(err, res) {
-    //     if (err) throw err;
-    //     console.log(res);
-    //     connection.end();
-    // });
-
-
-    // connection.query(sequel, function(err, res) {
-    //     if (err) throw err;
-    //     console.log(res);
-    //     connection.end();
   });
     });
     };
