@@ -54,17 +54,40 @@ inquirer
             index = i;
         }
     }
-    console.log(inquirerResponse.id);
-    console.log(res[index].item_id);
-    console.log(index);
+    // console.log(inquirerResponse.id);
+    // console.log(res[index].item_id);
+    // console.log(index);
+    if (parseInt(inquirerResponse.id) > res.length) {
+        console.log("That item does not exist");
+        
+    }
 
+    else {
     if (inquirerResponse.quantity > res[index].stock_quantity) {
         console.log("INSUFFICIENT QUANTITY");
+
     }
     else {
         var cost = inquirerResponse.quantity * res[index].price;
-        console.log("That costed you $" + cost);
+        console.log("That costed you $" + cost + "\n");
+
+        //sql stuff
+        afterConnection();
+
+        
+
+    function afterConnection() {
+        var newQuantity = res[index].stock_quantity - inquirerResponse.quantity;
+    var updateSQL = "UPDATE products SET stock_quantity = " + newQuantity + " WHERE " + "item_id = " + res[index].item_id;
+    console.log(updateSQL);
+        connection.query(updateSQL, function(err, res) {
+            if (err) throw err;
+            console.log(res);
+            connection.end();
+        });
+      }
     }
+}
 // var sequel = "SELECT * FROM songs where genre = 'pop'";
 // var updateSQL = "INSERT INTO songs (title, artist, genre) VALUES ('" + inquirerResponse.title + "', '" + inquirerResponse.artist + "', '" + inquirerResponse.genre + "')";
 // console.log(updateSQL);
